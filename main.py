@@ -8,13 +8,13 @@ course_names = [["CS 300 L1", "CS 300 L2"],
                 ["CS 331 L1", "CS 331 L2"],
                 ["CS 382 L1", "CS 382 L2"],
                 ["CS 202"],
-                ["MATH 102"]]
+                ["MATH 230 L1", "MATH 230 L2"]]
 
 course_times = [[["MW 11:00AM 12:15PM"], ["MW 12:30PM 1:45PM"]],
-                [["TR 12:30PM 1:45PM"], ["MW 3:30PM 4:45PM"]],
+                [["TR 12:30PM 1:45PM"], ["MW 9:30AM 10:45AM"]],
                 [["MW 12:30PM 1:45PM"], ["TR 12:30PM 1:45PM"]],
                 [["MW 11:00AM 12:15PM"]],
-                [["MW 10:00AM 11:15AM"]]]
+                [["MW 8:00AM 9:15AM"], ["MW 3:30PM 4:45PM"]]]
 
 print(course_times)
 
@@ -56,12 +56,15 @@ schedules = generate_schedules(course_names)
 schedules_correct = []
 
 for sched in range(len(schedules)):
+    print("Schedule - start", sched)
     for clas in range(1, len(schedules[sched])):
+        print("Class - start", clas)
+        print()
         for prev in range(clas):
             current = course_times[clas][schedules[sched][clas]]
             old = course_times[prev][schedules[sched][prev]]
-            print("current", current)
-            print("old", old)
+            print("current", course_names[clas][schedules[sched][clas]])
+            print("old", course_names[prev][schedules[sched][prev]])
 
             clash = False
 
@@ -78,7 +81,7 @@ for sched in range(len(schedules)):
 
                             if currentDay == oldDay:
                                 print(oldStart, oldEnd, currentStart, currentEnd)
-                                if (oldStart-10 < currentStart <= oldEnd) or (oldStart <= currentEnd <= oldEnd):
+                                if (oldStart-10 < currentStart <= oldEnd+10) or (oldStart-10 <= currentEnd <= oldEnd+10):
                                     clash = True
                                     break
                 if clash:
@@ -87,12 +90,13 @@ for sched in range(len(schedules)):
                 break
         if clash:
             break
+        print("Class - start", clas)
+    print("Schedule - end\n", sched)
+    print(clash)
     if not clash:
         schedules_correct.append(schedules[sched])
 
 print(schedules_correct)
-
-schedules_correct = schedules[::]
 
 print(len(schedules) - len(schedules_correct), "out of", len(schedules), "possible schedules have a clash!")
 
@@ -129,6 +133,9 @@ for sched in range(len(schedules_correct)):
                 currentDay = days.index(a[aD])
                 currentStart = int(a[-8:-4])
                 currentEnd = int(a[-4:])
+
+                currentStart = currentStart//100*100 + round((currentStart%100)/60*100)
+                currentEnd = currentEnd//100*100 + round((currentEnd%100)/60*100)
 
                 start_point = (currentDay*200+3, round(currentStart/2))
                 end_point = ((currentDay+1)*200-3, round(currentEnd/2))
