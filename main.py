@@ -41,10 +41,18 @@ for i in range(2):
             for l in range(1):
                 for m in range(2):
                     print(i, j, k, l, m)
-if len(course_names) == 5:
-    schedules = [(a, b, c, d, e) for a in range(len(course_names[0])) for b in range(len(course_names[1])) for c in range(len(course_names[2])) for d in range(len(course_names[3])) for e in range(len(course_names[4]))]
-elif len(course_names) == 6:
-    schedules = [(a, b, c, d, e, f) for a in range(len(course_names[0])) for b in range(len(course_names[1])) for c in range(len(course_names[2])) for d in range(len(course_names[3])) for e in range(len(course_names[4])) for f in range(len(course_names[5]))]
+def generate_schedules(course_names, current_schedule=[]):
+    if len(course_names) == 0:
+        return [tuple(current_schedule)]
+    
+    schedules = []
+    for i in range(len(course_names[0])):
+        new_schedule = current_schedule + [i]
+        schedules.extend(generate_schedules(course_names[1:], new_schedule))
+    
+    return schedules
+
+schedules = generate_schedules(course_names)
 schedules_correct = []
 
 for sched in range(len(schedules)):
