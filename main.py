@@ -194,5 +194,4 @@ for sched in range(len(schedules_correct)):
     cv2.imshow(window_name, image)
     cv2.waitKey(0)
     filename = f"out/{sched+1}.jpg"
-    cv2.imwrite(filename, image
-                )
+    cv2.imwrite(filename, image)
