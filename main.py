@@ -31,48 +31,45 @@ padding = 10 # Required between classes in minutes
 
 course_names = [
     [
-        "CS 300 L1",
-        "CS 300 L2"
-    ],
-    [
-        "CS 331 L1",
-        "CS 331 L2"
-    ],
-    [
-        "CS 382 L1",
-        "CS 382 L2"
-    ],
-    [
         "CS 202"
     ],
     [
-        "MATH 230 L1",
-        "MATH 230 L2"
+        "CS 310 L1",
+        "CS 310 L2"
+    ],
+    [
+        "CS 340 L1",
+        "CS 340 L2"
+    ],
+    [
+        "CS 370 L1",
+        "CS 370 L2"
+    ],
+    [
+        "MATH 102"
     ]
 ]
 
 course_times = [
     [
-        ["MW 11:00AM 12:15PM"], # We can add more times for this section such as a lab e.g. ["MW 11:00AM 12:15PM", "FF 1:00PM 2:00PM"]
-        ["MW 12:30PM 1:45PM"]
+        ["TR 11:00AM 12:15PM"], # We can add more times for this section such as a lab e.g. ["MW 11:00AM 12:15PM", "FF 1:00PM 2:00PM"]
     ],
     [
-        ["TR 12:30PM 1:45PM"],
+        ["MW 2:30PM 3:45PM"],
         ["MW 9:30AM 10:45AM"]
     ],
     [
-        ["MW 12:30PM 1:45PM"],
+        ["MW 11:00AM 12:15PM"],
         ["TR 12:30PM 1:45PM"]
     ],
     [
-        ["MW 11:00AM 12:15PM"]
+        ["MW 2:30PM 3:45PM"],
+        ["MW 12:30PM 1:45PM"]
     ],
     [
-        ["MW 8:00AM 9:15AM"],
-        ["MW 3:30PM 4:45PM"]
+        ["TR 8:00AM 9:15AM"]
     ]
 ]
-
 
 # Convert timings to readable format
 print("Converting course times:")
