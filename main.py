@@ -4,25 +4,84 @@ import cv2
 import time
 import random
 
-course_names = [["CS 300 L1", "CS 300 L2"],
-                ["CS 331 L1", "CS 331 L2"],
-                ["CS 382 L1", "CS 382 L2"],
-                ["CS 202"],
-                ["MATH 230 L1", "MATH 230 L2"]]
+# How to enter classes:
+# 
+# course_names = [
+#    <list of sections for course 1>,
+#    <list of sections for course 2>,
+#    ...
+# ]
+#
+# course_times = [
+#    [
+#       <list of times for section 1 of course 1>,
+#       <list of times for section 2 of course 1>,
+#       ...
+#    ],
+#    [
+#       <list of times for section 1 of course 2>,
+#       <list of times for section 2 of course 2>,
+#       ...
+#    ],
+# ]
+# 
+# If a timing only represents one day, repeat the letter for that day twice e.g. "FF" for Friday
 
-course_times = [[["MW 11:00AM 12:15PM"], ["MW 12:30PM 1:45PM"]],
-                [["TR 12:30PM 1:45PM"], ["MW 9:30AM 10:45AM"]],
-                [["MW 12:30PM 1:45PM"], ["TR 12:30PM 1:45PM"]],
-                [["MW 11:00AM 12:15PM"]],
-                [["MW 8:00AM 9:15AM"], ["MW 3:30PM 4:45PM"]]]
+padding = 10 # Required between classes in minutes
 
-print(course_times)
+course_names = [
+    [
+        "CS 300 L1",
+        "CS 300 L2"
+    ],
+    [
+        "CS 331 L1",
+        "CS 331 L2"
+    ],
+    [
+        "CS 382 L1",
+        "CS 382 L2"
+    ],
+    [
+        "CS 202"
+    ],
+    [
+        "MATH 230 L1",
+        "MATH 230 L2"
+    ]
+]
+
+course_times = [
+    [
+        ["MW 11:00AM 12:15PM"], # We can add more times for this section such as a lab e.g. ["MW 11:00AM 12:15PM", "FF 1:00PM 2:00PM"]
+        ["MW 12:30PM 1:45PM"]
+    ],
+    [
+        ["TR 12:30PM 1:45PM"],
+        ["MW 9:30AM 10:45AM"]
+    ],
+    [
+        ["MW 12:30PM 1:45PM"],
+        ["TR 12:30PM 1:45PM"]
+    ],
+    [
+        ["MW 11:00AM 12:15PM"]
+    ],
+    [
+        ["MW 8:00AM 9:15AM"],
+        ["MW 3:30PM 4:45PM"]
+    ]
+]
+
+
+# Convert timings to readable format
+print("Converting course times:")
+print("e.g.", course_times[0], "to:", end=" ")
 
 for i in range(len(course_times)):
     for j in range(len(course_times[i])):
         for k in range(len(course_times[i][j])):
             sep = course_times[i][j][k].split(' ')
-            print(sep)
             for s in range(1, 3):
                 if "PM" in sep[s] and sep[s][:2] != "12":
                     sep[s] = sep[s].replace("PM", "").replace(":", "")
@@ -30,44 +89,32 @@ for i in range(len(course_times)):
                 else:
                     sep[s] = sep[s].replace("PM", "").replace("AM", "").replace(":", "")
                     sep[s] = "0"*(4-len(sep[s])) + sep[s]
-            print(sep)
             course_times[i][j][k] = "".join(sep)
 
-print(course_times)
+print(course_times[0], "\n")
 
-for i in range(2):
-    for j in range(2):
-        for k in range(2):
-            for l in range(1):
-                for m in range(2):
-                    print(i, j, k, l, m)
+
+# Generate all possible schedules
 def generate_schedules(course_names, current_schedule=[]):
     if len(course_names) == 0:
         return [tuple(current_schedule)]
-    
     schedules = []
     for i in range(len(course_names[0])):
         new_schedule = current_schedule + [i]
         schedules.extend(generate_schedules(course_names[1:], new_schedule))
-    
     return schedules
 
 schedules = generate_schedules(course_names)
 schedules_correct = []
 
+
+# Delete clashes
 for sched in range(len(schedules)):
-    print("Schedule - start", sched)
     for clas in range(1, len(schedules[sched])):
-        print("Class - start", clas)
-        print()
         for prev in range(clas):
             current = course_times[clas][schedules[sched][clas]]
             old = course_times[prev][schedules[sched][prev]]
-            print("current", course_names[clas][schedules[sched][clas]])
-            print("old", course_names[prev][schedules[sched][prev]])
-
             clash = False
-
             for a in current:
                 for aD in range(2):
                     currentDay = a[aD]
@@ -78,29 +125,20 @@ for sched in range(len(schedules)):
                             oldDay = b[bD]
                             oldStart = int(b[-8:-4])
                             oldEnd = int(b[-4:])
-
                             if currentDay == oldDay:
-                                print(oldStart, oldEnd, currentStart, currentEnd)
-                                if (oldStart-10 < currentStart <= oldEnd+10) or (oldStart-10 <= currentEnd <= oldEnd+10):
+                                if (oldStart-padding < currentStart <= oldEnd+padding) or (oldStart-padding <= currentEnd <= oldEnd+padding):
                                     clash = True
                                     break
-                if clash:
-                    break
-            if clash:
-                break
-        if clash:
-            break
-        print("Class - start", clas)
-    print("Schedule - end\n", sched)
-    print(clash)
+                if clash: break
+            if clash: break
+        if clash: break
     if not clash:
         schedules_correct.append(schedules[sched])
 
-print(schedules_correct)
-
-print(len(schedules) - len(schedules_correct), "out of", len(schedules), "possible schedules have a clash!")
+print(len(schedules) - len(schedules_correct), "out of", len(schedules), "possible schedules have a clash!\n")
 
 for sched in range(len(schedules_correct)):
+    print("Schedule", sched+1)
     for clas in range(len(schedules_correct[sched])):
         print(course_names[clas][schedules_correct[sched][clas]], course_times[clas][schedules_correct[sched][clas]])
     print()
@@ -152,9 +190,9 @@ for sched in range(len(schedules_correct)):
 
     # Displaying the image
     cv2.destroyAllWindows()
+    print("Showing Schedule", sched+1, "of", len(schedules_correct), "possible schedules.")
     cv2.imshow(window_name, image)
     cv2.waitKey(0)
-    filename = f"out/{sched}.jpg"
+    filename = f"out/{sched+1}.jpg"
     cv2.imwrite(filename, image
                 )
-    print("shown")
